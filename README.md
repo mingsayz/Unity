@@ -129,9 +129,31 @@
 ---
 ## 이벤트 함수
   * 실행되는 시점이 미리 정해져 있는 함수들
-    - Start()
-    - Update()
-    - OnCollisionXXX()
+    - Reset() : 에디터에서 처음 연결될때, Reset() 명령을 실행했을때 호출
+    - Awake() : 항상 Start 함수 이전, 혹은 활성화 직후에 호출
+      + 씬이 시작할 때, 비활성화 상태인 경우, 활성화 되기 전까지 호출되지 않는다.
+      + Start()함수보다 먼저 실행시키고 싶은 코드가 있다면 다음과 같이 코드 작성
+      ```csharp
+        void Awake(){
+          Debug.Log("Awake!");
+        }
+        void Start(){
+          Debug.Log("Start!");
+        }
+      ```
+    - OnEnable / OnDisable : 활성화 / 비활성화 직후에 호출
+      + OnEnable 함수는 Awake, Start 함수와는 다르게 활성화 될 때마다 호출
+      ```csharp
+        void OnEnable(){
+          // 해당 함수가 들어있는 스크립트를 가지고 있는 오브젝트가 켜질때마다 호출
+        }
+        void OnDisable(){
+          // 해당 함수가 들어있는 스크립트를 가지고 있는 오브젝트가 꺼질때마다 호출
+        }
+      ```
+    - Start() : 시작할때 실행되는 함수
+    - Update() : 매 프레임 마다 호출
+    - OnCollisionXXX2D() (매개변수 : Collider2D) : 물리적 연산 O
       + Collision 충돌 순간 : OnCollisionEnter2D
       + Collision 충돌 중 : OnCollisionStay2D
       + Collision 충돌 끝 : OnCollisionExit2D
@@ -140,6 +162,39 @@
         Debug.Log (col.gameObject.name);
         GetComponent<SpriteRenderer> ().color = Color.red;
       }
+      ```
+    - OnTriggerXXX2D() (매개변수 : Collider2D) : 물리적 연산 X
+      + OnTriggerEnter2D : 트리거 충돌이 일어나는 순간 호출
+      + OnTriggerStay2D : 트리거 충돌 중 호출
+      + OnTriggerExit2D : 트리거 충돌이 끝나는 순간 호출
+      + IsTrigger을 체크
+
+    - OnMouseXXX
+      + OnMouseDown : 클릭하는 순간 호출
+      + OnMouseDrag : 누르는 중 호출
+      + OnMouseUp : 눌렀다 떼는 순간 호출
+        ```csharp
+          void OnMouseDown(){
+            Debug.Log("mouse down!");
+          }
+
+        ```
+      > Collider가 있어야 호출 가능, 터치도 작동
+
+    - FixedUpdate : 일정 시간마다 호출 (기본적으로 0.02초마다, 수정 가능)
+      + 시간에 따라 동일한 결과를 보고 싶을때 사용
+    - LateUpdate : Update 후 매 프레임 마다 호출 (카메라 이동에 빈번하게 사용됨)
+    - OnBecameVisible / OnBecameInvisible (카메라에 보일때 Visible 함수 호출 / 안보일때 Invisible 함수 호출)
+      ```csharp
+      void OnBecameVisible(){
+		      Debug.Log ("visible");
+        }
+	    void OnBecameInvisible(){
+		      Debug.Log ("Invisible!");
+	      }
+	    void Update(){
+		      transform.Translate ((Vector3.right) * 0.1f);
+	      }
       ```
 ---
 ## 접근 한정자
@@ -169,6 +224,63 @@
     - 123456 -> 123,456
   * string -> int : int.Parse("형식")
   * float -> int = (int)변수
+---
+## enum (열거형)
+  * 변수가 가질 수 있는 값의 범위를 지정하는 방법. 쉽게 말해, 자료형을 만드는 것. 변수의 값을 일련의 선택지로 제한할 수 있다.
+  ```csharp
+  using System.Collections;
+  using System.Collections.Generic;
+  using UnityEngine;
+
+  public enum MonsterType {Zombie,Alien,Plant}; // 인덱스값으로 표현가능. Zombie : 0 , Alien : 1 , Plant : 2
+
+  public class Test : MonoBehaviour{
+    public MonsterType type = MonsterType.Zombie;
+
+    void Start(){
+      Debug.Log(type.ToString());
+    }
+  }
+  ```
+---
+## Unity 좌표계
+  * World Point : 실제로 좌표계에서 우리가 아는 위치 값 (3,1,0) 등
+  * Viewport Point : 0~1 사이의 값으로 화면을 기준으로 상대적인 위치값을 나타냄 ((0.4,0.1,0) 이라면 x축으로 40%만큼, y축으로 10%만큼 떨어져있다는 것 )
+  * Screen Point : 해상도에 따른 위치값  (해상도 값에 Viewport 값을 곱해주면 나옴)
+  ```csharp
+  // 클릭하는 곳에 해당 오브젝트 생성하는 코드
+  public class pointtest : MonoBehaviour {
+
+	public GameObject obj;
+	void Update(){
+		if (Input.GetMouseButtonDown (0)) //좌클릭
+		{
+			GameObject tempObj = Instantiate (obj);
+			Vector3 tempV = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			tempV.z = 0f;
+			tempObj.transform.position = tempV;
+		}
+	}
+}
+
+  ```  
+---
+## Foreach 문
+  * 배열(or 컬렉션)에 있는 모든 요소들에 대해 반복적인 명령을 수행할 때 사용하는 반복문
+  ```csharp
+    public class Example : MonoBehaviour{
+      public GameObject[] objArr = new GameObject[3];
+
+      private void Start(){
+        foreach(GameObject obj in objArr){
+          obj.SetActive(false);
+        }
+        // for ( int i = 0 ; i < 3 ; i++){
+        //  objArr[i].SetActive(false);
+      //}
+      }
+    }
+  ```
 ---
 ## GameObject 변수에 값을 할당하는 방법
   * 1. 에디터에서 씬에 있는 게임 오브젝트 혹은 프리팹을 변수에 드래그&드롭
