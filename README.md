@@ -218,6 +218,61 @@
   * protected internal : 같은 어셈블리 내부 & 파생 클래스
 
 ---
+## 프로퍼티
+  ```csharp
+  public int Score(){
+    get {
+      return score; // Score를 가져올때 score를 리턴한다.
+    } //스코어 값을 가져올 때
+    set {
+      score = value; // Score의 값을 변경하면 score의 값이 변경된다.
+    } // 스코어에 값을 집어넣을 때
+  }
+  ```
+
+  ```csharp
+  public class ScoreManager : MonoBehaviour {
+
+	public Text scoreText;
+	public int Score{
+		get {
+			return PlayerPrefs.GetInt ("Score", 0);
+		}
+		set {
+			value = Mathf.Clamp (value, 0, 100);
+			PlayerPrefs.SetInt ("Score", value);
+			scoreText.text = value.ToString ();
+		}
+	}
+	private int score = 0;
+}
+  ```
+---
+## 싱글톤 오브젝트
+  * 게임 매니저, 오디오 매니저, 데이터 매니저 등 게임 내에 유일한 독립체로 존재하는 오브젝트
+  * 특징
+    - 클래스의 인스턴스가 하나만 생성됨을 보장
+    - 어디서든지 그 인스턴스에 접근 가능
+    - 많은 싱글턴 오브젝트는 여러씬에 걸쳐 유지됨
+    - static 을 이용해 구현
+    ```csharp
+
+    public class Singleton : MonoBehaviour {
+
+    	public static Singleton instance;
+
+    	void Awake(){
+    		if (instance) {
+    			Destroy (gameObject);
+    			return;
+    		}
+    		instance = this;
+    	}
+
+    }
+
+    ```
+---
 ## 형 변환
   * int -> string : int.ToString("형식")
     - 형식에는 N0, N1 등등이 있는데 각각은 소수점 자리 수를 의미함
