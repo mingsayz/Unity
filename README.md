@@ -257,9 +257,9 @@
     - static 을 이용해 구현
     ```csharp
 
-    public class Singleton : MonoBehaviour {
-
-    	public static Singleton instance;
+    //GameManager script
+    public class GameManager : MonoBehaviour {
+    	public static GameManager instance;
 
     	void Awake(){
     		if (instance) {
@@ -269,9 +269,208 @@
     		instance = this;
     	}
 
+    	public Text scoreText;
+    	public int Score{
+    		get
+    		{
+    			return score;
+    		}
+
+    		set
+    		{
+    			score = value;
+    			scoreText.text = value.ToString("N0");
+    		}
+    	}
+    	private int score;
+
+
     }
 
     ```
+
+```csharp
+// ScoreUp 기능을 가진 스크립트가 싱글톤 오브젝트에 접근하는 것
+public class ScoreUp : MonoBehaviour {
+  public void scoreUp(){
+    GameManager.instance.Score += 100;
+  }
+}
+
+```
+---
+## singleton 안전하게 보호하기
+  * 싱글톤 인스턴스를 여러 곳에서 가져다 쓰면서 그 안의 내용물을 지운다거나 바꿀 수 있음. 그것을 방지하기위해 다음과 같이 '읽기' 만 가능하도록 설정
+  ```csharp
+  public class GameManager : MonoBehaviour {
+	private static GameManager instance; //싱글톤은 private 으로 유지
+	public static GameManager Instance{
+		get { return instance; } // 가져가는것만 가능하도록 프로퍼티 설정
+	}
+	public int score;
+	void Awake(){
+		if (instance) {
+			Destroy (gameObject);
+			return;
+		}
+		instance = this;
+    DontDestroyOnLoad (gameObject); //다른 씬에서 사용해야하면 여러씬에 거쳐서 파괴되지 않음
+	}
+}
+  ```
+---
+## script 순서
+  * script순서 때문에 GM이 생성되기 전에 다른 스크립트에서 싱글톤 오브젝트에 접근하면 오류가 발생할 수있음.
+  * 그래서 다음과 같이 GM 싱글톤을 작성한다면 , 오류 발생 여지가 없음
+  ```csharp
+  public class GameManager : MonoBehaviour {
+  private static GameManager instance;
+  public static GameManager Instance{
+    get {
+      if (instance == null) {
+        GameObject tempGM = new GameObject ("GameManager");
+        instance =tempGM.AddComponent<GameManager> ();
+        DontDestroyOnLoad (tempGM);
+      }
+      return instance; }
+  }
+  public int score = 0;
+  }
+  ```
+---
+## 컬렉션
+  * 데이터의 모음, 자료구조
+  * System.Collections , System.Collections.Generic 라이브러리에 존재
+  * LIST
+    - 배열과 비슷한 컬렉션
+    - 배열처럼 대괄호[] 로 요소에 접근이 가능하며, 특정 요소를 바로 읽고 쓸 수 있다.
+    - 배열과는 다르게 크기 지정 없이 요소의 추가, 삭제에 따라 자동으로 크기를 늘였다, 줄였다 하기 때문에 메모리 소모가 적다
+    - 보통 인벤토리에 많이 사용
+    - 단점 : 특정 요소에 접근하는 속도가 조금 느리다.
+    ```csharp
+    public class CollectionTest : MonoBehaviour {
+
+  	public List<int> intList; // List안에 들어가는 형과 이름을 정의
+
+  	void Start(){
+  		intList = new List<int> ();
+
+  		intList.Add (1);
+  		intList.Add (2);
+
+  		Debug.Log (intList [0]);
+  		Debug.Log (intList.Count); // 총 원소 개수 출력
+
+  		intList.Remove (1); // 1이란 값을 지움
+  		intList.RemoveAt(1); // 인덱스 1 에 있는 값을 지움
+
+  		intList.Insert (1, 50); // 첫번째 인덱스에 50이란 값을 집어넣음
+  	}
+
+  }
+
+    ```
+  * Stack
+    - 한 쪽 끝에서만 자료를 넣거나 뺄 수 있는 컬렉션
+    - LIFO (Last In First Out)
+    - 되돌리기 기능 (Ctrl + Z) 에 많이 사용된다.
+    - 오브젝트 풀링 : 오브젝트를 대기시켜놓고 요청할때마다 꺼내주는 역할 구현에 많이 사용한다.
+    ```csharp
+    public class CollectionTest : MonoBehaviour {
+
+  	Stack<float> testStack = new Stack<float>();
+
+  	void Start(){
+  		testStack.Push (1.0f);
+  		testStack.Push (2.0f);
+  		testStack.Push (-5.3f);
+
+  		Debug.Log(testStack.Pop());
+      Debug.Log(testStack.Count);
+      testStack.Clear();
+  	}
+  }
+
+
+    ```
+  * Dictionary
+    - 키(Key)와 값(Value)을 가진 컬렉션
+    - List가 인덱스(int 형)로 요소에 접근한다면, Dictionary는 키(어떤 형태든 가능)로 요소에 접근이 가능하다.
+    - 스킬 정보 가져오기, 텍스트 파일 읽기 등에 사용된다.
+    ```csharp
+  public class CollectionTest : MonoBehaviour {
+
+  	Dictionary <string,int> testDic = new Dictionary<string,int> (); //key, value에는 어떠한 자료형이든 올 수 있음
+
+  	void Start(){
+  		testDic.Add ("High Score", 10000);
+  		testDic.Add ("key", 200);
+
+  		Debug.Log (testDic ["key"]); // 200 반환
+  	}
+  }
+    ```
+  * 파일로부터 읽어와서 Dictionary에 저장하는 법
+  ```csharp
+public class CollectionTest : MonoBehaviour {
+
+	Dictionary<int,StatData> dataDic = new Dictionary<int,StatData>();
+
+	void Start(){
+		TextAsset textAsset = Resources.Load<TextAsset> ("Datas"); // Resources 파일에 있는 TextAsset 형식의 'Datas' 파일을 받아와서 textAsset 변수에 저장
+		string[] lines = textAsset.text.Split ('\n');
+
+		foreach (string line in lines) {
+			string[] words = line.Split ('\t');
+			// words[0] : level, words[1] : hp, words[2] : mp
+			dataDic.Add(int.Parse(words[0]),new StatData(int.Parse(words[1]),int.Parse(words[2])));
+		}
+    Debug.Log("1 lv.hp : " + dataDic[1].hp);
+	}
+
+}
+
+
+public class StatData{
+	public int hp, mp;
+	public StatData(int hp, int mp){
+		this.hp = hp;
+		this.mp = mp;
+	}
+}
+  ```
+
+  * value를 Dictionary로 관리 하는 법
+  ```csharp
+public class CollectionTest : MonoBehaviour {
+	Dictionary<string,Dictionary<int,StatData>> dataDic = new Dictionary<string,Dictionary<int,StatData>>();
+	// key는 직업, value 는 스탯(lv,hp,mp)를 딕셔너리로 관리  
+	void Start(){
+		TextAsset textAsset = Resources.Load<TextAsset> ("Datas");
+		string[] lines = textAsset.text.Split ('\n');
+
+		foreach (string line in lines) {
+			string[] words = line.Split ('\t');
+			// words[0] : level, words[1] : hp, words[2] : mp
+			if (dataDic.ContainsKey (words [0])) {
+
+				dataDic.Add (words [0], new Dictionary<int,StatData> ());
+			}
+			dataDic [words [0]].Add (int.Parse (words [1]), new StatData(int.Parse(words[2]),int.Parse(words[3])));
+		}
+	}
+
+}
+
+
+public class StatData{
+	public int hp, mp;
+	public StatData(int hp, int mp){
+		this.hp = hp;
+		this.mp = mp;
+	}
+}
+  ```
 ---
 ## 형 변환
   * int -> string : int.ToString("형식")
