@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -49,4 +50,10 @@ TagManager:
     locked: 0
   - name: InteractCanvas
     uniqueID: 3335989541
+    locked: 0
+  - name: Effect
+    uniqueID: 542864201
+    locked: 0
+  - name: AttackEffect
+    uniqueID: 3588917969
     locked: 0

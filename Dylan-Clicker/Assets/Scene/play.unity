@@ -514,7 +514,7 @@ RectTransform:
   m_Children:
   - {fileID: 1211825304}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -870,7 +870,7 @@ RectTransform:
   m_Children:
   - {fileID: 291555273}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -889,6 +889,7 @@ GameObject:
   - component: {fileID: 1672919156}
   - component: {fileID: 1672919155}
   - component: {fileID: 1672919158}
+  - component: {fileID: 1672919159}
   m_Layer: 0
   m_Name: Machine
   m_TagString: Untagged
@@ -1079,6 +1080,19 @@ AudioSource:
     m_PostInfinity: 2
     m_RotationOrder: 0
   m_ExtensionPropertyValues: []
+--- !u!114 &1672919159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1672919153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 962860453336744ff8c704555987ad3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackEffect: {fileID: 1040009585462184, guid: a6750b825fe894f27979685d1e72568f,
+    type: 2}
 --- !u!1 &1715162293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1586,7 +1600,7 @@ RectTransform:
   - {fileID: 1930887447}
   - {fileID: 2049737664}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1750,6 +1764,11 @@ Prefab:
     - target: {fileID: 1997852434518700, guid: 7b950fac1ab344f668052e59cb173927, type: 2}
       propertyPath: m_Name
       value: Groundunit (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 61151865375703374, guid: 7b950fac1ab344f668052e59cb173927,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7b950fac1ab344f668052e59cb173927, type: 2}

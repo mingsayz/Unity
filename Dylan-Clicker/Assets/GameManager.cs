@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour {
 
 	public void TouchScreen(){
 		anim.SetTrigger ("Attack_t");
-
 		score += hitScore;
 		scoreText.text = "Score :"+score.ToString ();
 

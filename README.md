@@ -472,6 +472,106 @@ public class StatData{
 }
   ```
 ---
+## Coroutine (코루틴)
+  * 어떤 코드를 읽는 동안에는 다른 코드실행은 전혀 못한다.
+  * 코루틴을 이용하여 일꾼이 계속 일하도록 만듬
+    - null : 1프레임 기다림
+    - new WaitForSeconds : x초 기다림
+    - StartCoroutine : 코루틴이 끝날때까지 기다림
+    - WWW : 웹 정보를 받아올 때까지 기다림
+    ```csharp
+    // 기본예제
+  public class CoroutineTest : MonoBehaviour {
+
+  	void Start(){
+  		StartCoroutine (WaitTest());
+  	}
+
+  	IEnumerator WaitTest(){
+
+  		yield return new WaitForSeconds (3f); // 3초 기다릴때까지 일꾼을 양보해라
+
+  		Debug.Log ("good!");
+  	}
+  }
+    ```
+    ```csharp
+// Coroutine을 이용한 코드 (오브젝트 알파값 시간마다 감소)    
+public class CoroutineTest : MonoBehaviour {
+	public float d = 0.05f;
+	SpriteRenderer sr;
+	void Awake(){
+		sr = GetComponent<SpriteRenderer> ();
+	}
+
+	void Start(){
+		StartCoroutine (ColorChange (d));
+	}
+	IEnumerator ColorChange(float delay){ // 서서히 오브젝트가 희미해지게 만드는 코드
+		for (float f = 1f; f >= 0f; f -= 0.01f) {
+			Color tcolor = sr.color;
+			tcolor.a = f; // tcolor의 알파값에 f 지정
+			sr.color = tcolor;
+			yield return new WaitForSeconds (delay); // 한번 실행이되면 0.1초 동안 일꾼 양보후 다시 실행
+      // yield return null;  // 다음 프레임까지 기다림
+		}
+	}
+}
+    ```
+    > Update() 와 Coroutine 의 yield return null 은 프레임마다 코드를 실행하는 것으로 하는 일은 같지만, Update()는 끝나도 프레임마다 계속해서 조건을 검사하지만, yield return null은 끝나면 아예 끝나는 것. 오브젝트가 한개만 있을때는 미세한 차이지만 이 컴포넌트를 가진 오브젝트가 100개가 있다면, Update()가 그 오브젝트들을 매 프레임마다 계속 검사하기 때문에, 속도 저하의 원인이 된다.
+
+
+    ```csharp
+public class CoroutineTest : MonoBehaviour {
+	public string textureUrl;
+	RawImage rImage;
+
+
+	void Awake(){
+		rImage = GetComponent<RawImage> ();
+
+	}
+	void Start(){
+		StartCoroutine (GetTexture (textureUrl));
+	}
+
+	IEnumerator GetTexture(string url){
+		WWW www = new WWW (url); // WWW(웹) 형식
+		yield return www; // url로부터 이미지를 받아올때까지 기다려라. 못받았으면 일꾼 양보
+		rImage.texture = www.texture;
+	}
+}
+// Unity UI의 raw image에 웹으로부터 가져온 텍스쳐 집어넣음
+    ```
+
+    * Coroutine이 Coroutine을 호출하는 경우
+    ```csharp
+public class CoroutineTest : MonoBehaviour {
+	public Transform boxTf;
+	public void Update(){
+		if (Input.GetKeyDown(KeyCode.Space) && !isMoving){ //동작하고 있으면 다시 호출하지않도록 하는코드
+			StartCoroutine (BoxCoroutine ());
+		}
+	}
+
+	bool isMoving = false;
+	IEnumerator BoxCoroutine(){
+		isMoving = true;
+		yield return StartCoroutine(BoxTranslate(Vector3.up)); // 이 명령 수행이 완료될때까지 기다림
+		yield return new WaitForSeconds (2f);
+		yield return StartCoroutine(BoxTranslate(Vector3.down));
+		isMoving = false;
+	}
+
+	IEnumerator BoxTranslate(Vector3 dir){
+		for (int i = 0; i < 10; i++) {
+			boxTf.Translate (dir * 0.1f);
+			yield return new WaitForSeconds (0.1f);
+		}
+	}
+}
+    ```
+---
 ## 형 변환
   * int -> string : int.ToString("형식")
     - 형식에는 N0, N1 등등이 있는데 각각은 소수점 자리 수를 의미함
@@ -750,4 +850,51 @@ public class passwordManager : MonoBehaviour {
     - 유저의 의도와 관계없이 출력 , 스킵 가능, 수익성 낮음
   * Reward Ads
     - 유저가 원해서 시청, 스킵 불가능, 수익성 높음
+---
+## Object pooling
+  * GC : Garbage collection
+    - 메모리가 해제되었을때 할당되어있던 메모리는 Garbage가 된다. 그 때 Garbage Collector가 호출되어 Garbage 공간을 날려버리고 새로운 메모리 공간을 확보한다.
+    - 하지만 GC가 많이 호출되다보면 게임에 렉이 걸리기 시작한다.
+  * 게임을 할 때 반복적으로 생성/제거 되는 오브젝트들
+    - bullet 등
+    - 이를 Object pooling으로 관리. (Destroy를 해서 Garbage Collector를 호출할게 아니라, 미리 일정량 Object를 pool에 넣어놓고 필요할 때마다 pop,push를 이용해 사용한다.)
+
+---
+## 부드러운 물체 움직임 구현
+  * 카메라의 자연스러운 이동으로 구현가능
+  ```csharp
+  // main 카메라 c# 스크립트
+public class Move : MonoBehaviour {
+
+	public Transform targetTf;
+
+	Vector3 refVelov;
+
+	void LateUpdate(){
+		Vector3 tempV = Vector3.SmoothDamp(transform.position,targetTf.position,ref refVelov,0.3f) + Vector3.back * 10;
+		tempV.z = -10f;
+		transform.position = tempV;
+	}
+}
+
+  ```
+
+  ```csharp
+  // 움직이는 물체 c# 스크립트
+public class ballMove : MonoBehaviour {
+
+	Vector3 input = Vector3.zero;
+
+	void Update(){
+		input.x = Input.GetAxis ("Horizontal"); // x축 horizontal 맵핑
+		input.y = Input.GetAxis ("Vertical"); // y축 vertical 맵핑
+
+		transform.Translate (input);
+	}
+}
+
+
+  ```
+
+
 ---
