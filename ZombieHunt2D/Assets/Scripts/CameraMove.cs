@@ -10,7 +10,7 @@ public class CameraMove : MonoBehaviour {
 
 	void LateUpdate(){
 		Vector3 tempV = Vector3.SmoothDamp(transform.position,targetTf.position,ref refVelov,0.3f) + Vector3.back * 10;
-		tempV.z = -10f;
+		tempV.z = -30f;
 		transform.position = tempV;
 	}
 }

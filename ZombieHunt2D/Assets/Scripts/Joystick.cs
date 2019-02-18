@@ -25,6 +25,8 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
 
 		if (isMoving) {
 			playerAnim.SetTrigger ("Move_t");// 캐릭터 움직이는 애니메이션 joystick에서 구현
+		}else{
+			playerAnim.ResetTrigger ("Move_t");
 		}
 		Vector2 pos;
 
@@ -33,8 +35,9 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
 			pos.y = (pos.y / bgImg.rectTransform.sizeDelta.y);
 		}
 
-		inputVector = new Vector3 (pos.x * 2 + 1, pos.y * 2 - 1, 0);
+		inputVector = new Vector3 (pos.x * 2 , pos.y * 2 , 0);
 		inputVector = (inputVector.magnitude > 1.0f) ? inputVector.normalized : inputVector;
+		//Debug.Log (inputVector);
 
 		//Move Joystick Img
 		joystickImg.rectTransform.anchoredPosition = new Vector3(inputVector.x * (bgImg.rectTransform.sizeDelta.x / 3 ), inputVector.y * (bgImg.rectTransform.sizeDelta.y /3));
@@ -57,5 +60,9 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
 	}
 	public float GetVerticalValue(){
 		return inputVector.y;
+	}
+	public float GetAxis(){
+		float rotationDir = Mathf.Atan2 (inputVector.y, inputVector.x) * Mathf.Rad2Deg;
+		return rotationDir;
 	}
 }
