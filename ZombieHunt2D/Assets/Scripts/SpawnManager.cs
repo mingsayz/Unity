@@ -4,28 +4,25 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour {
 
-	//private static SpawnManager instance;
-	//public static SpawnManager Instance{
-	//	get { return instance; }
-	//}
-
 	Vector3[] positions = new Vector3[10];
 	public GameObject smallEnemyPrefab;
 
 	[SerializeField]
-	private bool isSpawn = false;
+	//private bool isSpawn = true;
+	public int spawnMax = 3;
 
 	public float spawnDelay = 1.5f;
-	float spawnTimer = 0f;
+	//float spawnTimer = 0f;
 
 	// Use this for initialization
 	void Start () {
 		CreatePositions ();
+		StartCoroutine (SpawnEnemyCoroutine ());
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		SpwanEnemy ();
+		//SpawnEnemy ();
 	}
 
 	void CreatePositions(){
@@ -33,7 +30,6 @@ public class SpawnManager : MonoBehaviour {
 		for (int i = 0; i < positions.Length; i++) {
 			float viewPosX = Random.Range (0f, 1f);
 			float viewPosY = Random.Range (0f, 1f);
-			//viewPosX = gapX + gapX * i;
 			Vector3 viewPos = new Vector3 (viewPosX, viewPosY, 0);
 			Vector3 worldPos = Camera.main.ViewportToWorldPoint	(viewPos);
 			worldPos.z = 0f;
@@ -42,16 +38,44 @@ public class SpawnManager : MonoBehaviour {
 		}
 	}
 
-	void SpwanEnemy(){
-		if (isSpawn == true) {
-			if (spawnTimer > spawnDelay) {
-				int rand = Random.Range (0, positions.Length);
-				Instantiate (smallEnemyPrefab, positions [rand], Quaternion.identity);
-				spawnTimer = 0f;
+	void SpawnEnemy(){
+		int rand = Random.Range (0, positions.Length);
+		Instantiate (smallEnemyPrefab, positions [rand], Quaternion.identity);
+					//spawnTimer = 0f;
+				//}
+				//spawnTimer += Time.deltaTime;
+	}
+
+	private IEnumerator SpawnEnemyCoroutine(){
+		int randTime = (int)Random.Range (2, 4);
+		//yield return new WaitForSeconds (randTime);
+		while (true) {
+			if (spawnMax > 0) {
+				SpawnEnemy ();
+				yield return new WaitForSeconds (randTime);
+				//randTime = (int)Random.Range (2, 5);
+				spawnMax--;
+			} else {
+				//StopCoroutine (SpawnEnemyCoroutine ());
+				break;
 			}
-			spawnTimer += Time.deltaTime;
 		}
 	}
+
+//		while (isSpawn) {
+//			if (spawnTimer > spawnDelay) {
+//				int randIndex = Random.Range (0, positions.Length);
+//				Instantiate (smallEnemyPrefab, positions [randIndex], Quaternion.identity);
+//				spawnTimer = 0f;
+//				spawnCount++;
+//			}
+//			if (spawnCount >= spawnMax)
+//				isSpawn = false;
+
+//			spawnTimer += Time.deltaTime;
+//			yield return new WaitForSeconds(3);
+		//}
+	
 }
 //
 //	void Awake(){

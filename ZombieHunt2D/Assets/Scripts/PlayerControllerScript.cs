@@ -7,6 +7,13 @@ public class PlayerControllerScript : MonoBehaviour  {
 	
 	public Joystick joystick;
 	public float MoveSpeed;
+	public int maxHealth = 3;
+
+	Rigidbody2D rigid;
+	Animator animator;
+	bool isDie = false;
+
+	int health = 3;
 
 	public Animator playerAnim;
 
@@ -19,16 +26,40 @@ public class PlayerControllerScript : MonoBehaviour  {
 	void Start(){
 		_transform = transform;
 		_moveVector = Vector3.zero; // 플레이어 이동벡터 초기화
+		rigid = gameObject.GetComponent<Rigidbody2D>();
+		animator = gameObject.GetComponentInChildren<Animator> ();
+
+		health = maxHealth;
 	}
 
 	void Update(){
+		if (health == 0) {
+			if (!isDie) {
+				Die ();
+			}
+			return;
+		}
 		HandleInput ();
 	}
 
 	void FixedUpdate(){
+		if (health == 0) {
+			return;
+		}
 		Move ();
 		Turn ();
 	}
+
+	void Die(){
+		isDie = true;
+		Vector2 dieVelocity = new Vector2 (0, 10f);
+		rigid.AddForce (dieVelocity, ForceMode2D.Impulse);
+		Invoke ("RestartStage", 2f);
+	}
+
+//	void RestartStage(){
+//		GameManager.RestartStage ();
+//	}
 
 	public void HandleInput(){
 		_moveVector = PoolInput ();
@@ -56,41 +87,25 @@ public class PlayerControllerScript : MonoBehaviour  {
 		}
 		_transform.rotation = Quaternion.Euler (0f, 0f, rotationDir);
 	}
-
-	//Enumerator CheckAnimatorState(){
-	//	while (playerAnim.GetCurrentAnimatorStateInfo (0).normalizedTime < exitTime) {
-	//		playerAnim.SetTrigger ("Attack_t");
-	//		yield return null;
-	//	}
-	//}
-
+//		
 //	IEnumerator CheckAnimatorState(){
-//		if((true == playerAnim.GetCurrentAnimatorStateInfo(0).IsName("flashlight_Attack"))){
+//		while(!playerAnim.GetCurrentAnimatorStateInfo(0).IsName("flashlight_Attack")){
 //			playerAnim.SetTrigger ("Attack_t");
 //			yield return null;
-//		}else{
-//			//playerAnim.GetCurrentAnimatorStateInfo (1).IsName ("flashlight_idle");
-//			//playerAnim.Stop("flashlight_idle");
-//			playerAnim.SetTrigger("Attack_t");
+//		}
+//		while (playerAnim.GetCurrentAnimatorStateInfo (0).normalizedTime < exitTime) {
+//			//playerAnim.SetTrigger ("Attack_t");
 //			yield return null;
 //		}
-//	} // 어택 코루틴. 1으로 대체함
-
-	IEnumerator CheckAnimatorState(){
-		while(!playerAnim.GetCurrentAnimatorStateInfo(0).IsName("flashlight_Attack")){
-			playerAnim.SetTrigger ("Attack_t");
-			yield return null;
-		}
-		while (playerAnim.GetCurrentAnimatorStateInfo (0).normalizedTime < exitTime) {
-			//playerAnim.SetTrigger ("Attack_t");
-			yield return null;
-		}
-	}
+//	}
 
 	public void Attack(){
-		StartCoroutine(CheckAnimatorState());
-		//playerAnim.SetTrigger ("Attack_t");
+		
+		//StartCoroutine(CheckAnimatorState());
+		playerAnim.SetTrigger ("Attack_t");
 	}
+
+
 
 
 }

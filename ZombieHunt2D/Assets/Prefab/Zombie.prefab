@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 61309654499775978}
   - component: {fileID: 50336555915153372}
   - component: {fileID: 114211668693911450}
+  - component: {fileID: 58387765022257172}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Untagged
@@ -38,7 +39,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1732685413986160}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.02, y: 0.13, z: 0}
+  m_LocalPosition: {x: 4.5, y: -0.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -63,7 +64,22 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
+  m_Constraints: 4
+--- !u!58 &58387765022257172
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1732685413986160}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.019866228, y: 0}
+  serializedVersion: 2
+  m_Radius: 3.5880954
 --- !u!61 &61309654499775978
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -117,6 +133,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb2a052047ac4c589cf76729d9f8745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   movePower: 1
   traceTarget: {fileID: 0}
 --- !u!212 &212613836563501776
@@ -155,7 +176,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1146f384acf2b402fb0b7b8a6bc5f7f9, type: 3}
   m_Color: {r: 0.5588235, g: 0.5588235, b: 0.5588235, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 2.41, y: 2.22}
