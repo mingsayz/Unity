@@ -4,46 +4,40 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
-	public int healthPoint;
-	public int damage;
-
-
 	public float movePower = 1f;
-	public GameObject traceTarget;
-	private GameObject currentWaypoint;
+	public Transform traceTarget;
 	private Animator animator;
 
+	public float chaseRadius;
+	public float attackRadius;
 
-	bool isTracing = false;
-	private float moveFloat;
+	public int health;
+	public string enemyName;
+	public int baseAttack;
+
 
 	void Awake(){
-		traceTarget = GameObject.Find ("Player");
 		animator = gameObject.GetComponent<Animator> ();
-		healthPoint = 5;
-		damage = 1;
 	}
 
 	void Start(){
-
+		traceTarget = GameObject.FindWithTag ("Player").transform;
 	}
-
 
 	void FixedUpdate(){
-		float distance = Vector3.Distance (traceTarget.transform.position, gameObject.transform.position);
-		//Debug.Log (distance);
-		if (isTracing) {
-			Trace ();
-			if (distance < 2.5f) {
-				Attack ();
-			} else {
-				animator.SetBool ("Attack_b", false);
-			}
-			float latestDirection = gameObject.transform.rotation.z;
-		} else {
-			//StartCoroutine ("MoveAroundCoroutine");
-		}
+		CheckDistance ();
 	}
+
+	void CheckDistance(){
+		if (Vector3.Distance (traceTarget.position, transform.position) <= chaseRadius
+		   && Vector3.Distance (traceTarget.position, transform.position) > attackRadius) {
+			animator.SetBool ("Move_b", true);
+			Trace ();
+		} else {
+			animator.SetBool ("Move_b", false); //도중에 불린값 바뀜 수정 요망
+			animator.SetTrigger("Attack_t");
+		}
+	}	
 	void Turn(Vector3 turnPos){
 		//Vector3 playerPos = traceTarget.transform.position;
 		float rotationPos = Mathf.Atan2 (transform.position.y - turnPos.y, transform.position.x - turnPos.x) * Mathf.Rad2Deg;
@@ -53,7 +47,7 @@ public class Enemy : MonoBehaviour {
 		transform.rotation = Quaternion.Euler (0f, 0f, rotationPos);
 	}
 
-	void Trace ()
+	public void Trace ()
 	{
 		Vector3 playerPos = traceTarget.transform.position;
 		Vector3 enemyPos = gameObject.transform.position;
@@ -62,62 +56,53 @@ public class Enemy : MonoBehaviour {
 		Turn (playerPos); // 플레이어 방향으로 턴
 		gameObject.transform.position += tempVec * movePower * Time.deltaTime; 
 	}
-	void MoveAround(){
-		Vector3 movementDirection = new Vector2 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f)).normalized;
-		Turn (movementDirection);
-		gameObject.transform.position += movementDirection * movePower * Time.deltaTime;
-		//this.transform.localRotation * Vector3.forward;
-	}
-//
-	IEnumerator MoveAroundCoroutine(){
-		while (!isTracing) {
-			Vector3 movementDirection = new Vector2 (Random.Range (-10.0f, 10.0f), Random.Range (-10.0f, 10.0f)).normalized;
-			//Vector2 objDestination = new Vector2 (movementDirection.x * 10f, movementDirection.y * 10f);
-			Vector2 objDestination = Vector2.MoveTowards(transform.position,movementDirection,movePower);
-			GetComponent<Rigidbody2D> ().MovePosition (objDestination);
-//			moveFloat += Time.deltaTime * 2.5f;
-			Turn (movementDirection);
-//			this.transform.position = Vector2.Lerp (this.transform.position, objDestination, moveFloat);
-			//gameObject.transform.position += movementDirection * Time.deltaTime * movePower;
-			yield return new WaitForSeconds(5f);
-		}
-	}
-
-	void OnTriggerEnter2D(Collider2D other){
-		if (other.CompareTag("Player")) { // player의 박스콜라이더와 충돌시
-			if (other is BoxCollider2D) {
-				StopCoroutine (MoveAroundCoroutine());	
-				isTracing = true;
-				animator.SetBool ("Move_b", true);
-
-			}
-		}
-	}
-
-	void OnTriggerStay2D(Collider2D other){
-		if (other.CompareTag("Player")) { // player의 박스콜라이더와 충돌시
-			if (other is BoxCollider2D) {
-				isTracing = true;
-				animator.SetBool ("Move_b", true);
-			}
-		}
-	}
-
-	void OnTriggerExit2D(Collider2D other){
-		if (other.CompareTag("Player")) {
-			if (other is BoxCollider2D) { // player의 박스콜라이더와 충돌시
-				StartCoroutine (MoveAroundCoroutine());
-				isTracing = false;
-				animator.SetBool ("Move_b", false);
-
-			}
-
-		}
-	}
 
 	void Attack(){
-		animator.SetBool ("Attack_b",true);
+		if (!animator.GetCurrentAnimatorStateInfo (0).IsName ("Attack_t")) {
+			animator.SetTrigger ("Attack_t");
+		}
 	}
 
 
+//	public void Damage(int damage){
+//		CurHealth
+//	}
 }
+//	void OnTriggerEnter2D(Collider2D other){
+//		if (other.CompareTag("Player")) { // player의 박스콜라이더와 충돌시
+//			if (other is BoxCollider2D) {
+//				isTracing = true;
+//			}
+//		}
+//	}
+//
+//	void OnTriggerStay2D(Collider2D other){
+//		if (other.CompareTag("Player")) { // player의 박스콜라이더와 충돌시
+//			if (other is BoxCollider2D) {
+//				isTracing = true;
+//				float distance = Vector3.Distance (traceTarget.transform.position, gameObject.transform.position);
+//				if (distance < 2.5f) {
+//					animator.SetBool ("Move_b", false);
+//					//animator.SetTrigger ("Attack_t");	
+//					Attack();
+//				} else {
+//					animator.SetBool ("Move_b", true);
+//				}
+//
+//			}
+//		}
+//	}
+//
+//	void OnTriggerExit2D(Collider2D other){
+//		if (other.CompareTag("Player")) {
+//			if (other is BoxCollider2D) { // player의 박스콜라이더와 충돌시
+//				StartCoroutine (MoveAroundCoroutine());
+//				isTracing = false;
+//				animator.SetBool ("Move_b", false);
+//
+//			}
+//
+//		}
+//	}
+
+

@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -50,9 +51,9 @@ TagManager:
   - name: Player
     uniqueID: 2225772537
     locked: 0
-  - name: InteractCanvas
-    uniqueID: 1291109807
-    locked: 0
   - name: Button
     uniqueID: 4287375129
+    locked: 0
+  - name: InteractCanvas
+    uniqueID: 1291109807
     locked: 0

@@ -97,3 +97,7 @@
 /home/minseong/Desktop/Unity/ZombieHunt2D/Temp/bin/Debug/Unity.CecilTools.dll
 /home/minseong/Desktop/Unity/ZombieHunt2D/Temp/bin/Debug/Unity.Cecil.Pdb.dll
 /home/minseong/Desktop/Unity/ZombieHunt2D/Temp/bin/Debug/Unity.Cecil.Mdb.dll
+/home/minseong/Desktop/Unity/ZombieHunt2D/Temp/bin/Debug/Assembly-CSharp-firstpass.dll
+/home/minseong/Desktop/Unity/ZombieHunt2D/Temp/bin/Debug/Assembly-CSharp-firstpass.pdb
+/home/minseong/Desktop/Unity/ZombieHunt2D/Temp/bin/Debug/Assembly-CSharp-Editor-firstpass.dll
+/home/minseong/Desktop/Unity/ZombieHunt2D/Temp/bin/Debug/Assembly-CSharp-Editor-firstpass.pdb

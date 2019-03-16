@@ -23,11 +23,11 @@ GameObject:
   - component: {fileID: 95035567388407086}
   - component: {fileID: 61309654499775978}
   - component: {fileID: 50336555915153372}
-  - component: {fileID: 114211668693911450}
   - component: {fileID: 58387765022257172}
+  - component: {fileID: 114734988650046762}
   m_Layer: 0
   m_Name: Zombie
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,7 +96,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.41, y: 2.22}
+    oldSize: {x: 3.18, y: 2.94}
     newSize: {x: 2.41, y: 2.22}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -122,7 +122,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114211668693911450
+--- !u!114 &114734988650046762
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -133,13 +133,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb2a052047ac4c589cf76729d9f8745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patrolPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   movePower: 1
   traceTarget: {fileID: 0}
+  chaseRadius: 4
+  attackRadius: 2
+  health: 0
+  enemyName: 
+  baseAttack: 0
 --- !u!212 &212613836563501776
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -174,7 +174,7 @@ SpriteRenderer:
   m_SortingLayerID: -1690252659
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 1146f384acf2b402fb0b7b8a6bc5f7f9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 55c68268e9f0f49eba100cae50f398a6, type: 3}
   m_Color: {r: 0.5588235, g: 0.5588235, b: 0.5588235, a: 1}
   m_FlipX: 1
   m_FlipY: 0
