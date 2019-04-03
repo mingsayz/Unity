@@ -10,9 +10,10 @@ public class PlayerAttack : MonoBehaviour {
 	private bool attacking = false;
 		
 	private float attackTimer = 0;
-	private float attackCd = 0.3f;
+	private float attackCd = 1f;
 
 	public Collider2D attackTrigger;
+	public GameObject lightObj;
 
 	private Animator anim;
 
@@ -41,6 +42,11 @@ public class PlayerAttack : MonoBehaviour {
 		}
 
 		anim.SetBool ("Attacking", attacking);
+		if (attacking) {
+			lightObj.SetActive (false);
+		} else { 
+			lightObj.SetActive (true);
+		}
 	}
 }
 

@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
+
 
 public class Enemy : MonoBehaviour {
+
 
 	public float movePower = 1f;
 	public Transform traceTarget;
@@ -63,46 +66,7 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
-
-//	public void Damage(int damage){
-//		CurHealth
-//	}
 }
-//	void OnTriggerEnter2D(Collider2D other){
-//		if (other.CompareTag("Player")) { // player의 박스콜라이더와 충돌시
-//			if (other is BoxCollider2D) {
-//				isTracing = true;
-//			}
-//		}
-//	}
-//
-//	void OnTriggerStay2D(Collider2D other){
-//		if (other.CompareTag("Player")) { // player의 박스콜라이더와 충돌시
-//			if (other is BoxCollider2D) {
-//				isTracing = true;
-//				float distance = Vector3.Distance (traceTarget.transform.position, gameObject.transform.position);
-//				if (distance < 2.5f) {
-//					animator.SetBool ("Move_b", false);
-//					//animator.SetTrigger ("Attack_t");	
-//					Attack();
-//				} else {
-//					animator.SetBool ("Move_b", true);
-//				}
-//
-//			}
-//		}
-//	}
-//
-//	void OnTriggerExit2D(Collider2D other){
-//		if (other.CompareTag("Player")) {
-//			if (other is BoxCollider2D) { // player의 박스콜라이더와 충돌시
-//				StartCoroutine (MoveAroundCoroutine());
-//				isTracing = false;
-//				animator.SetBool ("Move_b", false);
-//
-//			}
-//
-//		}
-//	}
+
 
 

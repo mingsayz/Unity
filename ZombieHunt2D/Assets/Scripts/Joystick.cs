@@ -12,7 +12,7 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
 	private Vector3 inputVector;
 
 	public Animator playerAnim;
-	private bool isMoving = false;
+	//private bool isMoving = false;
 
 	void Start(){
 		bgImg = GetComponent<Image> ();	
@@ -23,11 +23,11 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
 	public virtual void OnDrag(PointerEventData ped){
 		//Debug.Log ("Joystick >>> OnDrag()");
 
-		if (isMoving) {
-			playerAnim.SetTrigger ("Move_t");// 캐릭터 움직이는 애니메이션 joystick에서 구현
-		}else{
-			playerAnim.ResetTrigger ("Move_t");
-		}
+//		if (isMoving) {
+//			playerAnim.SetTrigger ("Move_t");// 캐릭터 움직이는 애니메이션 joystick에서 구현
+//		}else{
+//			playerAnim.ResetTrigger ("Move_t");
+//		}
 		Vector2 pos;
 
 		if (RectTransformUtility.ScreenPointToLocalPointInRectangle (bgImg.rectTransform, ped.position, ped.pressEventCamera, out pos)) {
@@ -45,12 +45,12 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
 	}
 
 	public virtual void OnPointerDown(PointerEventData ped){
-		isMoving = true;
+		//isMoving = true;
 		OnDrag (ped);
 	}
 
 	public virtual void OnPointerUp(PointerEventData ped){
-		isMoving = false;
+		//isMoving = false;
 		inputVector = Vector3.zero;
 		joystickImg.rectTransform.anchoredPosition = Vector3.zero;
 	}

@@ -10,6 +10,7 @@ public class AttackTrigger : MonoBehaviour {
 
 		if(col.isTrigger != true && col.CompareTag("Enemy")){
 			col.SendMessageUpwards ("Damage", dmg);
+			Debug.Log ("Damage 10");
 		}
 	}
 }
